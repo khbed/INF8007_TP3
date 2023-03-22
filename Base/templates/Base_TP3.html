@@ -81,7 +81,7 @@
 		
 		
 		let validInterventionNbToRemove;
-		let validInterventionNbToModify;
+		let validInterventionNbToModify = ({{noModifyInvalid}}==0);
 		let interventionToModify;
 	</script>
 
@@ -397,6 +397,23 @@
       </footer>
 
     </div>
+
+	{% if (noModifyInvalid == 1) %}
+	<script>
+		//Une déclaration a été ajoutée, afficher le popup de confirmation
+		window.addEventListener("load", ()=> {
+		document.getElementById("popup-title").textContent = "Erreur";
+		document.getElementById("popup-message").textContent = "L'intervention #{{modify_no_intervention}} n’existe pas.";
+		//JQuery pour l'affichage de la fenêtre modale Bootstrap
+		$("#popup").modal();
+		//Lorsque la fenêtre modale est fermée, recharger la page web en s’assurant d’enlever tous les
+		//paramètres dans la requête.
+		$("#popup").on('hidden.bs.modal', (e) => {
+		window.location.search = "";
+		})
+		});
+	</script>
+	{% endif %}
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
     <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>

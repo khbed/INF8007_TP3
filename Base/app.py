@@ -18,17 +18,25 @@ def index():
 
     # On va chercher la vaeur de modify_no_intervention
     modify_no_intervention = request.args.get('modify_no_intervention')
+    noModifyInvalid=-1
+    affichageModify=False
     # Si modify_no_intervention a une valeur non nulle on l'imprime sur la console
     if modify_no_intervention != None:
         print(modify_no_intervention)
+        print((interventions_df['ID_INTERVENTION'].astype(str) == str(modify_no_intervention)).any())
+        if (interventions_df['ID_INTERVENTION'].astype(str) == str(modify_no_intervention)).any():
+            noModifyInvalid = 0
+        else:
+            noModifyInvalid = 1
 
     # On va chercher la vaeur de remove_no_intervention
     remove_no_intervention = request.args.get('remove_no_intervention')
     # Si remove_no_intervention a une valeur non nulle on l'imprime sur la console
     if remove_no_intervention != None:
         print(remove_no_intervention)
-
-    return render_template('Base_TP3.html', pdq_df=pdq_df, nombre_interventions=nombre_interventions.to_dict(), min_date=min_date, max_date=max_date)
+    print(affichageModify)
+    return render_template('Base_TP3.html', pdq_df=pdq_df, nombre_interventions=nombre_interventions.to_dict(), min_date=min_date, max_date=max_date, 
+    modify_no_intervention=modify_no_intervention, noModifyInvalid=noModifyInvalid)
 
 
 if __name__ == "__main__":
