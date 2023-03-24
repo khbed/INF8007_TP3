@@ -414,6 +414,30 @@
 		});
 	</script>
 	{% endif %}
+
+	{% if (noModifyInvalid == 0) %}
+	<script>
+		modifyNoSearch = document.getElementById("modify_no_intervention");
+		modifyPDQList = document.getElementById("modify_pdq_nb");
+		modifyPlaceList = document.getElementById("modify_pdq_place");
+		modifyCatList = document.getElementById("modify_cat_intervention");
+		modifyDescList = document.getElementById("modify_desc_intervention");
+		modifyDateList = document.getElementById("modify_date_incident");
+		modifyQuartList = document.getElementById("modify_quart");
+
+		modifyNoSearch.value={{modify_no_intervention}};
+		window.alert({{ toModify.pdq }});
+		iModPDQ=0;
+		noPDQMod = modifyPDQList.options[0];
+		do {
+			iModPDQ+=1;
+			noPDQMod = modifyPDQList.options[iModPDQ]
+		} while((noPDQMod.value != {{ toModify.pdq }}) && (iModPDQ<modifyPDQList.length))
+
+		document.getElementById("modify_pdq_nb").options[iModPDQ].selected=true;
+	</script>
+	{% endif %}
+
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
     <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>

@@ -17,15 +17,18 @@ def index():
     min_date = interventions_df.iloc[-1]['DATE_INCIDENT']
 
     # On va chercher la vaeur de modify_no_intervention
+    interventions_df.sort_values(by=['ID_INTERVENTION'], inplace=True, ascending=True)
     modify_no_intervention = request.args.get('modify_no_intervention')
     noModifyInvalid=-1
     affichageModify=False
+    lineToModify=interventions_df.iloc[0]
     # Si modify_no_intervention a une valeur non nulle on l'imprime sur la console
     if modify_no_intervention != None:
         print(modify_no_intervention)
         print((interventions_df['ID_INTERVENTION'].astype(str) == str(modify_no_intervention)).any())
         if (interventions_df['ID_INTERVENTION'].astype(str) == str(modify_no_intervention)).any():
             noModifyInvalid = 0
+            lineToModify=interventions_df.iloc[int(modify_no_intervention)]
         else:
             noModifyInvalid = 1
 
@@ -36,7 +39,7 @@ def index():
         print(remove_no_intervention)
     print(affichageModify)
     return render_template('Base_TP3.html', pdq_df=pdq_df, nombre_interventions=nombre_interventions.to_dict(), min_date=min_date, max_date=max_date, 
-    modify_no_intervention=modify_no_intervention, noModifyInvalid=noModifyInvalid)
+    modify_no_intervention=modify_no_intervention, noModifyInvalid=noModifyInvalid, toModify={'pdq' : lineToModify['PDQ'], 'date' : lineToModify['DATE_INCIDENT'], 'cat': lineToModify['CATÉGORIE'], 'quart' : lineToModify['QUART_TRAVAIL']})
 
 
 if __name__ == "__main__":
