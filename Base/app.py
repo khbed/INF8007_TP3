@@ -24,22 +24,40 @@ def index():
     lineToModify=interventions_df.iloc[0]
     # Si modify_no_intervention a une valeur non nulle on l'imprime sur la console
     if modify_no_intervention != None:
-        print(modify_no_intervention)
-        print((interventions_df['ID_INTERVENTION'].astype(str) == str(modify_no_intervention)).any())
         if (interventions_df['ID_INTERVENTION'].astype(str) == str(modify_no_intervention)).any():
             noModifyInvalid = 0
             lineToModify=interventions_df.iloc[int(modify_no_intervention)]
         else:
             noModifyInvalid = 1
 
+    modify_date_incident = request.args.get('modify_date_incident')
+    modify_cat_intervention = request.args.get('modify_cat_intervention')
+    modify_pdq_nb = request.args.get('modify_pdq_nb')
+    modify_quart = request.args.get('modify_quart')
+    modifEffectuee = False
+    if ((modify_no_intervention != None) and  (modify_date_incident != None) and  (modify_cat_intervention != None) and  (modify_pdq_nb != None) and (modify_quart != None)):
+        #Ouvrir le fichier des tâches en lecture, récupérer l'ensemble des lignes et fermer le fichier
+        interventions_file = open(file='data/interventions.tsv', mode='r', encoding='UTF-8')
+        lignes = interventions_file.readlines()
+        interventions_file.close()
+        #Écraser le fichier des tâches, réecrire l'ensemble des lignes incluant celle modifiée
+        interventions_file = open(file='data/interventions.tsv', mode='w', encoding='UTF-8')
+        for ligne in lignes:
+            contenu = ligne.strip().split("\t")
+            if contenu[0] == str(modify_no_intervention):
+                ligne = contenu[0] + "\t" + modify_date_incident + "\t" + modify_cat_intervention + "\t" + modify_pdq_nb + "\t" + modify_quart + '\n'
+            interventions_file.write(ligne)
+        interventions_file.close()
+        modifEffectuee=True
+
     # On va chercher la vaeur de remove_no_intervention
     remove_no_intervention = request.args.get('remove_no_intervention')
     # Si remove_no_intervention a une valeur non nulle on l'imprime sur la console
     if remove_no_intervention != None:
         print(remove_no_intervention)
-    print(affichageModify)
+
     return render_template('Base_TP3.html', pdq_df=pdq_df, nombre_interventions=nombre_interventions.to_dict(), min_date=min_date, max_date=max_date, 
-    modify_no_intervention=modify_no_intervention, noModifyInvalid=noModifyInvalid, toModify={'pdq' : lineToModify['PDQ'], 'date' : lineToModify['DATE_INCIDENT'], 'cat': lineToModify['CATÉGORIE'], 'quart' : lineToModify['QUART_TRAVAIL']})
+    modify_no_intervention=modify_no_intervention, noModifyInvalid=noModifyInvalid, toModify={'pdq' : lineToModify['PDQ'], 'date' : lineToModify['DATE_INCIDENT'], 'cat': lineToModify['CATÉGORIE'], 'quart' : lineToModify['QUART_TRAVAIL']}, modifEffectuee=modifEffectuee)
 
 
 if __name__ == "__main__":

@@ -85,7 +85,12 @@
 
 		let validInterventionNbToRemove;
 		let validInterventionNbToModify = ({{ noModifyInvalid }}== 0);
-		let interventionToModify;
+		let interventionToModify = {
+			"4": "",
+			"3": "",
+			"2": "",
+			"1": "",
+		};
 	</script>
 
 	<div class="container">
@@ -440,7 +445,7 @@
 		</footer>
 
 	</div>
-
+	
 	{% if (noModifyInvalid == 1) %}
 	<script>
 		//Une déclaration a été ajoutée, afficher le popup de confirmation
@@ -462,34 +467,59 @@
 	<script>
 		modifyNoSearch = document.getElementById("modify_no_intervention");
 		modifyPDQList = document.getElementById("modify_pdq_nb");
-		modifyPlaceList = document.getElementById("modify_pdq_place");
 		modifyCatList = document.getElementById("modify_cat_intervention");
-		modifyDescList = document.getElementById("modify_desc_intervention");
 		modifyDateList = document.getElementById("modify_date_incident");
 		modifyQuartList = document.getElementById("modify_quart");
 
 		modifyNoSearch.value = {{ modify_no_intervention }};
-		window.alert({{ toModify.pdq }});
 
 		const selectMod = (liste, valeur) => {
 			iMod = 0;
 			optionMod = liste.options[0];
-			do {
+			while ((optionMod.value != valeur) && (iMod < liste.length)) {
 				iMod += 1;
-				optionMod = liste.options[iMod]
-			} while ((optionMod.value != valeur) && (iMod < liste.length))
-			optionMod.selected = true
+				optionMod = liste.options[iMod];
+			}
+			let listeFirst = liste.firstElementChild;
+			optionMod.disabled = true;
+			liste.insertBefore(optionMod, listeFirst);
 		}
-		
-		selectMod(modifyPDQList,{{ toModify.pdq }})
+		const selectModText = (liste, texte) => {
+			iMod = 0;
+			optionMod = liste.options[0];
+			while ((optionMod.textContent != texte) && (iMod < liste.length)) {
+				iMod += 1;
+				optionMod = liste.options[iMod];
+			}
+			let listeFirst = liste.firstElementChild;
+			optionMod.selected = true;
+			optionMod.disabled = true;
+		}
 
-
-		console.log(document.getElementById("modify_pdq_nb").options[20].selected);
+		selectMod(modifyPDQList, {{ toModify.pdq }});
+		selectMod(modifyCatList, "{{ toModify.cat }}");
+		modifyDateList.value = "{{ toModify.date }}";
+		selectModText(modifyQuartList, "{{ toModify.quart }}");
 	</script>
 	{% endif %}
 
-
-
+	{% if (modifEffectuee) %}
+	<script>
+		console.log("test")
+		//Une déclaration a été ajoutée, afficher le popup de confirmation
+		window.addEventListener("load", () => {
+			document.getElementById("popup-title").textContent = "Modification";
+			document.getElementById("popup-message").textContent = "L'intervention #{{modify_no_intervention}} a été modifiée avec succès.";
+			//JQuery pour l'affichage de la fenêtre modale Bootstrap
+			$("#popup").modal();
+			//Lorsque la fenêtre modale est fermée, recharger la page web en s’assurant d’enlever tous les paramètres dans
+			//la requête
+			$("#popup").on('hidden.bs.modal', (e) => {
+				window.location.search = "";
+			})
+		});
+	</script>
+	{% endif %}
 	<!-- jQuery first, then Popper.js, then Bootstrap JS -->
 	<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
 		integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
