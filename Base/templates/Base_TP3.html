@@ -53,17 +53,12 @@
 			"20": "Centre-ville (Ville-Marie Ouest), parc du Mont-Royal"
 		};
 		//Généré dynamiquement en Python/Jinja et utilisé par scripts/forms.js
-<<<<<<< Updated upstream
-		const catInterventions = {
-			"Vols qualifiés":
-=======
 		const varInterventions = {}
 		{%for index, row in categorie_df.iterrows(): %}
 			 varInterventions[{{categorie_df['LIBELLÉ']}}]=2 
 		{% endfor %}
 		const catInterventions		= {
 			"Vols qualifiés" :
->>>>>>> Stashed changes
 				"Vol accompagné de violence de commerce, institution financière, personne, sac à main, véhicule blindé, véhicule, arme à feu, et tous autres types de vols qualifiés",
 			"Vol de véhicule à moteur":
 				"vol de voiture, camion, motocyclette, motoneige tracteur avec ou sans remorque, véhicule de construction ou de ferme, tout-terrain",
@@ -450,11 +445,6 @@
 				</div>
 			</div>
 		</div>
-<<<<<<< Updated upstream
-		<footer class="bg-dark text-light p-3 row">
-			<h6 id="derniere-mise-a-jour"></h6>
-		</footer>
-=======
 		<div class="tab-pane fade" id="nav-add" role="tabpanel" aria-labelledby="nav-add-tab">
 	      <div class="bg-light p-3 row">
 	        <h2><i class="bi bi-plus-square"></i><span class="align-bottom"> | Rapport de déclaration d'une intervention</span></h2>
@@ -678,7 +668,6 @@
       </footer>
 
     </div>
->>>>>>> Stashed changes
 
 	</div>
 	

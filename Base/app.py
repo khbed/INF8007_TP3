@@ -54,7 +54,6 @@ def index():
         else:
             noModifyInvalid = 1
 
-<<<<<<< Updated upstream
     modify_date_incident = request.args.get('modify_date_incident')
     modify_cat_intervention = request.args.get('modify_cat_intervention')
     modify_pdq_nb = request.args.get('modify_pdq_nb')
@@ -76,25 +75,16 @@ def index():
         modifEffectuee=True
 
     # On va chercher la vaeur de remove_no_intervention
-=======
-    # On va chercher la valeur de remove_no_intervention
->>>>>>> Stashed changes
     remove_no_intervention = request.args.get('remove_no_intervention')
     # Si remove_no_intervention a une valeur non nulle on l'imprime sur la console
     if remove_no_intervention != None:
         print(remove_no_intervention)
-<<<<<<< Updated upstream
-
-    return render_template('Base_TP3.html', pdq_df=pdq_df, nombre_interventions=nombre_interventions.to_dict(), min_date=min_date, max_date=max_date, 
-    modify_no_intervention=modify_no_intervention, noModifyInvalid=noModifyInvalid, toModify={'pdq' : lineToModify['PDQ'], 'date' : lineToModify['DATE_INCIDENT'], 'cat': lineToModify['CATÉGORIE'], 'quart' : lineToModify['QUART_TRAVAIL']}, modifEffectuee=modifEffectuee)
-=======
     print(affichageModify)
 
     return render_template('Base_TP3.html', pdq_df=pdq_df, nombre_interventions=nombre_interventions.to_dict(), min_date=min_date, max_date=max_date, 
     modify_no_intervention=modify_no_intervention, noModifyInvalid=noModifyInvalid, 
     toModify={'pdq' : lineToModify['PDQ'], 'date' : lineToModify['DATE_INCIDENT'], 'cat': lineToModify['CATÉGORIE'], 'quart' : lineToModify['QUART_TRAVAIL']},
     categorie_df=categorie_df, quart_df=quart_df, time_index = time_index)
->>>>>>> Stashed changes
 
 
 if __name__ == "__main__":
