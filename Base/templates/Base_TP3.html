@@ -55,11 +55,8 @@
 		//Généré dynamiquement en Python/Jinja et utilisé par scripts/forms.js
 		const catInterventions ={{categorie_df | tojson }};
 		//Généré dynamiquement en Python/Jinja et utilisé par scripts/forms.js
-		const quarts = {
-			"3": "nuit",
-			"2": "soir",
-			"1": "jour"
-		};
+		const quarts = {{quart_df | tojson }}
+
 		console.log(catInterventions)
 		//Généré dynamiquement en Python/Jinja et utilisé par scripts/rapport.js
 
@@ -187,14 +184,12 @@
 								<label for="add_cat_intervention">Catégorie</label>
 								<select class="form-control" id="add_cat_intervention" name="add_cat_intervention"
 									size="6">
-									<option value="Vols qualifiés">Vols qualifiés</option>
-									<option value="Vol de véhicule à moteur">Vol de véhicule à moteur</option>
-									<option value="Infractions entrainant la mort">Infractions entrainant la mort
-									</option>
-									<option value="Méfait">Méfait</option>
-									<option value="Vol dans / sur véhicule à moteur">Vol dans / sur véhicule à moteur
-									</option>
-									<option value="Introduction">Introduction</option>
+										{%for row in categorie_df: %}
+											<option value="{{row}}">{{row}}</option>
+										{% endfor %}
+										<script>
+											console.log({{categorie_df |tojson}})
+										</script>
 								</select>
 							</div>
 							<div class="form-group col-md-6">
@@ -211,13 +206,13 @@
 							<div class="form-group col-md-6">
 								<label for="add_quart">Quart</label>
 								<select class="form-control form-select" id="add_quart" name="add_quart">
-									{% for index, row in quart_df.iterrows(): %}
-										{% if row['ID'] == time_index : %}
-											<option selected>{{row['LIBELLÉ']}}</option>
-										{% else :%}
-											<option value='1'>{{row['LIBELLÉ']}}</option>                               
-										{% endif %}
-                        			{% endfor %}
+								{% for row in quart_df: %}
+									{% if row['ID'] == time_index : %}
+									<option selected>{{row['LIBELLÉ']}}</option>
+									{% else :%}
+									<option value='1'>{{row['LIBELLÉ']}}</option>                               
+									{% endif %}
+								{% endfor %}
 								</select>
 							</div>
 						</div>

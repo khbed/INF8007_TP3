@@ -9,33 +9,44 @@ app = Flask(__name__)
 def index():
     pdq_df = pd.read_csv('data/pdq.csv', sep=";")
     interventions_df = pd.read_csv('data/interventions.tsv', sep="\t")
-    categorie_df = pd.read_csv('data/catégoriesInterventions.csv', header=None, index_col=0, squeeze = True, sep=";")
+    categorie_df = pd.read_csv('data/catégoriesInterventions.csv', index_col=0, squeeze = True, sep=";")
     quart_df = pd.read_csv('data/quarts_travail.csv', sep=";")
 
-    print(categorie_df['LIBELLÉ'])
-
     time = datetime.now().time()
+    now = datetime.now()
+    time = now.strftime("%H:%M:%S")
 
     time_str = quart_df['HEURE_FIN'][0]
     time_fin_journee = datetime.strptime(time_str, '%H:%M:%S').time()
     time_str = quart_df['HEURE_DEBUT'][0]
     time_debut_journee = datetime.strptime(time_str, '%H:%M:%S').time()
 
-    time_str = quart_df['HEURE_FIN'][1]
-    time_fin_soir = datetime.strptime(time_str, '%H:%M:%S').time()
-    time_str = quart_df['HEURE_DEBUT'][1]
-    time_debut_soir = datetime.strptime(time_str, '%H:%M:%S').time()
+    time_str = quart_df['HEURE_FIN'][2]
+    time_fin_nuit = datetime.strptime(time_str, '%H:%M:%S').time()
+    time_str = quart_df['HEURE_DEBUT'][2]
+    time_debut_nuit = datetime.strptime(time_str, '%H:%M:%S').time()
 
-    if(time < time_fin_journee and time > time_debut_journee):
+    print(time)
+    time = datetime.strptime(time, '%H:%M:%S').time()
+    print("debut journee", time_debut_journee)
+    print("fin journee", time_fin_journee)
+    print("debut soir", time_debut_nuit)
+    print("fin soir", time_fin_nuit)
+
+    if time < time_fin_journee and time > time_debut_journee:
+        print("journee")
         time_index = 1
-    elif (time < time_fin_soir and time > time_debut_soir):
-        time_index = 2
-    else :
+    elif time < time_fin_nuit and time > time_debut_nuit:
+        print("nuit")
         time_index = 3
+    else  :
+        print("soir")
+        time_index = 2
 
-    print(categorie_df)
     categorie_df = categorie_df.to_dict()
-    print(categorie_df) 
+    print(categorie_df)
+    quart_df = quart_df.to_dict()
+    print(quart_df)
 
     nombre_interventions = interventions_df.groupby('PDQ')['PDQ'].size()
     pdq_df['NB_INTERVENTIONS'] = pdq_df['PDQ'].map(nombre_interventions)
