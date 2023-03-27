@@ -10,20 +10,21 @@ def index():
     pdq_df = pd.read_csv('data/pdq.csv', sep=";")
     interventions_df = pd.read_csv('data/interventions.tsv', sep="\t")
     categorie_df = pd.read_csv('data/catégoriesInterventions.csv', index_col=0, squeeze = True, sep=";")
-    quart_df = pd.read_csv('data/quarts_travail.csv', sep=";")
+    quart_df = pd.read_csv('data/quarts_travail.csv', index_col=0, squeeze = True, sep=";")
 
+    print(quart_df)
     time = datetime.now().time()
     now = datetime.now()
     time = now.strftime("%H:%M:%S")
 
-    time_str = quart_df['HEURE_FIN'][0]
+    time_str = quart_df['HEURE_FIN'][1]
     time_fin_journee = datetime.strptime(time_str, '%H:%M:%S').time()
-    time_str = quart_df['HEURE_DEBUT'][0]
+    time_str = quart_df['HEURE_DEBUT'][1]
     time_debut_journee = datetime.strptime(time_str, '%H:%M:%S').time()
 
-    time_str = quart_df['HEURE_FIN'][2]
+    time_str = quart_df['HEURE_FIN'][3]
     time_fin_nuit = datetime.strptime(time_str, '%H:%M:%S').time()
-    time_str = quart_df['HEURE_DEBUT'][2]
+    time_str = quart_df['HEURE_DEBUT'][3]
     time_debut_nuit = datetime.strptime(time_str, '%H:%M:%S').time()
 
     print(time)

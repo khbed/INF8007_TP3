@@ -208,11 +208,14 @@
 								<select class="form-control form-select" id="add_quart" name="add_quart">
 								{% for row in quart_df: %}
 									{% if row['ID'] == time_index : %}
-									<option selected>{{row['LIBELLÉ']}}</option>
+									<option selected>{{row}}</option>
 									{% else :%}
-									<option value='1'>{{row['LIBELLÉ']}}</option>                               
+									<option value='1'>{{row}}</option>                               
 									{% endif %}
 								{% endfor %}
+								<script>
+									console.log({{quart_df |tojson}})
+								</script>
 								</select>
 							</div>
 						</div>
