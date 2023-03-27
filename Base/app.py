@@ -32,7 +32,10 @@ def index():
     else :
         time_index = 3
 
+    print(interventions_df)
     nombre_interventions = interventions_df.groupby('PDQ')['PDQ'].size()
+    categorie_df = categorie_df.to_dict()
+    print("test", nombre_interventions)
     pdq_df['NB_INTERVENTIONS'] = pdq_df['PDQ'].map(nombre_interventions)
 
     interventions_df.sort_values(by=['DATE_INCIDENT'], inplace=True, ascending=False)

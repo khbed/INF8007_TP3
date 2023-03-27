@@ -53,10 +53,6 @@
 			"20": "Centre-ville (Ville-Marie Ouest), parc du Mont-Royal"
 		};
 		//Généré dynamiquement en Python/Jinja et utilisé par scripts/forms.js
-		const varInterventions = {}
-		{%for index, row in categorie_df.iterrows(): %}
-			 varInterventions[{{categorie_df['LIBELLÉ']}}]=2 
-		{% endfor %}
 		const catInterventions		= {
 			"Vols qualifiés" :
 				"Vol accompagné de violence de commerce, institution financière, personne, sac à main, véhicule blindé, véhicule, arme à feu, et tous autres types de vols qualifiés",
@@ -80,9 +76,11 @@
 		console.log(catInterventions)
 		//Généré dynamiquement en Python/Jinja et utilisé par scripts/rapport.js
 
+		const var_interventions ={{categorie_df | tojson }};
 		const nbInterventionsParPDQ = {{ nombre_interventions | tojson }};
 
 		console.log(nbInterventionsParPDQ)
+		console.log(var_interventions)
 
 		const dateMin = {{ min_date | tojson}};
 		const dateMax = {{ max_date | tojson}};
