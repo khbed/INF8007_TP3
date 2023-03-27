@@ -211,9 +211,13 @@
 							<div class="form-group col-md-6">
 								<label for="add_quart">Quart</label>
 								<select class="form-control form-select" id="add_quart" name="add_quart">
-									<option value="3">nuit</option>
-									<option value="2">soir</option>
-									<option value="1" selected>jour</option>
+									{% for index, row in quart_df.iterrows(): %}
+										{% if row['ID'] == time_index : %}
+											<option selected>{{row['LIBELLÉ']}}</option>
+										{% else :%}
+											<option value='1'>{{row['LIBELLÉ']}}</option>                               
+										{% endif %}
+                        			{% endfor %}
 								</select>
 							</div>
 						</div>
