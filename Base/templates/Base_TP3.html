@@ -54,15 +54,11 @@
 		};
 		//Généré dynamiquement en Python/Jinja et utilisé par scripts/forms.js
 		const catInterventions ={{categorie_df | tojson }};
+		
 		//Généré dynamiquement en Python/Jinja et utilisé par scripts/forms.js
-		const quarts = {{quart_df | tojson }}
-
-		console.log(catInterventions)
-		//Généré dynamiquement en Python/Jinja et utilisé par scripts/rapport.js
+		const quarts = {{quart_dic['LIBELLÉ'] | tojson}}
 
 		const nbInterventionsParPDQ = {{ nombre_interventions | tojson }};
-
-		console.log(nbInterventionsParPDQ)
 
 		const dateMin = {{ min_date | tojson}};
 		const dateMax = {{ max_date | tojson}};
@@ -187,9 +183,6 @@
 										{%for row in categorie_df: %}
 											<option value="{{row}}">{{row}}</option>
 										{% endfor %}
-										<script>
-											console.log({{categorie_df |tojson}})
-										</script>
 								</select>
 							</div>
 							<div class="form-group col-md-6">
@@ -206,16 +199,11 @@
 							<div class="form-group col-md-6">
 								<label for="add_quart">Quart</label>
 								<select class="form-control form-select" id="add_quart" name="add_quart">
-								{% for row in quart_df: %}
-									{% if row['ID'] == time_index : %}
-									<option selected>{{row}}</option>
-									{% else :%}
-									<option value='1'>{{row}}</option>                               
-									{% endif %}
-								{% endfor %}
-								<script>
-									console.log({{quart_df |tojson}})
-								</script>
+									
+
+
+
+
 								</select>
 							</div>
 						</div>

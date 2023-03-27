@@ -9,47 +9,44 @@ app = Flask(__name__)
 def index():
     pdq_df = pd.read_csv('data/pdq.csv', sep=";")
     interventions_df = pd.read_csv('data/interventions.tsv', sep="\t")
-    categorie_df = pd.read_csv('data/catégoriesInterventions.csv', index_col=0, squeeze = True, sep=";")
-    quart_df = pd.read_csv('data/quarts_travail.csv', index_col=0, squeeze = True, sep=";")
+    # quart_df = pd.read_csv('data/quarts_travail.csv', index_col=0, squeeze = True, sep=";")
 
-    print(quart_df)
-    time = datetime.now().time()
-    now = datetime.now()
-    time = now.strftime("%H:%M:%S")
+    # print(quart_df)
+    # time = datetime.now().time()
+    # now = datetime.now()
+    # time = now.strftime("%H:%M:%S")
 
-    time_str = quart_df['HEURE_FIN'][1]
-    time_fin_journee = datetime.strptime(time_str, '%H:%M:%S').time()
-    time_str = quart_df['HEURE_DEBUT'][1]
-    time_debut_journee = datetime.strptime(time_str, '%H:%M:%S').time()
+    # time_str = quart_df['HEURE_FIN'][1]
+    # time_fin_journee = datetime.strptime(time_str, '%H:%M:%S').time()
+    # time_str = quart_df['HEURE_DEBUT'][1]
+    # time_debut_journee = datetime.strptime(time_str, '%H:%M:%S').time()
 
-    time_str = quart_df['HEURE_FIN'][3]
-    time_fin_nuit = datetime.strptime(time_str, '%H:%M:%S').time()
-    time_str = quart_df['HEURE_DEBUT'][3]
-    time_debut_nuit = datetime.strptime(time_str, '%H:%M:%S').time()
+    # time_str = quart_df['HEURE_FIN'][3]
+    # time_fin_nuit = datetime.strptime(time_str, '%H:%M:%S').time()
+    # time_str = quart_df['HEURE_DEBUT'][3]
+    # time_debut_nuit = datetime.strptime(time_str, '%H:%M:%S').time()
 
-    print(time)
-    time = datetime.strptime(time, '%H:%M:%S').time()
-    print("debut journee", time_debut_journee)
-    print("fin journee", time_fin_journee)
-    print("debut soir", time_debut_nuit)
-    print("fin soir", time_fin_nuit)
+    # print(time)
+    # time = datetime.strptime(time, '%H:%M:%S').time()
+    # print("debut journee", time_debut_journee)
+    # print("fin journee", time_fin_journee)
+    # print("debut soir", time_debut_nuit)
+    # print("fin soir", time_fin_nuit)
 
-    if time < time_fin_journee and time > time_debut_journee:
-        print("journee")
-        time_index = 1
-    elif time < time_fin_nuit and time > time_debut_nuit:
-        print("nuit")
-        time_index = 3
-    else  :
-        print("soir")
-        time_index = 2
+    # if time < time_fin_journee and time > time_debut_journee:
+    #     print("journee")
+    #     time_index = 1
+    # elif time < time_fin_nuit and time > time_debut_nuit:
+    #     print("nuit")
+    #     time_index = 3
+    # else  :
+    #     print("soir")
+    #     time_index = 2
 
-    categorie_df = categorie_df.to_dict()
-    print(categorie_df)
-    quart_df = quart_df.to_dict()
-    print(quart_df)
+    nombre_interventions = get_nombre_interventions_PDQ()
+    quart_dic = get_dictionnaire_quarts()
+    categorie_df = get_categorie_interventions()
 
-    nombre_interventions = interventions_df.groupby('PDQ')['PDQ'].size()
     pdq_df['NB_INTERVENTIONS'] = pdq_df['PDQ'].map(nombre_interventions)
 
     interventions_df.sort_values(by=['DATE_INCIDENT'], inplace=True, ascending=False)
@@ -98,11 +95,25 @@ def index():
         print(remove_no_intervention)
     print(affichageModify)
 
-    return render_template('Base_TP3.html', pdq_df=pdq_df, nombre_interventions=nombre_interventions.to_dict(), min_date=min_date, max_date=max_date, 
+    return render_template('Base_TP3.html', pdq_df=pdq_df, nombre_interventions=nombre_interventions, min_date=min_date, max_date=max_date, 
     modify_no_intervention=modify_no_intervention, noModifyInvalid=noModifyInvalid, 
     toModify={'pdq' : lineToModify['PDQ'], 'date' : lineToModify['DATE_INCIDENT'], 'cat': lineToModify['CATÉGORIE'], 'quart' : lineToModify['QUART_TRAVAIL']},
-    categorie_df=categorie_df, quart_df=quart_df, time_index = time_index)
+    categorie_df=categorie_df, quart_dic=quart_dic)
 
+
+def get_dictionnaire_quarts():
+    quart_df = pd.read_csv('data/quarts_travail.csv', index_col='ID', sep=";")
+    return quart_df.to_dict()
+
+def get_categorie_interventions():
+    categorie_df = pd.read_csv('data/catégoriesInterventions.csv', index_col="LIBELLÉ", squeeze = True, sep=";")
+    return categorie_df.to_dict()
+
+def get_nombre_interventions_PDQ():
+    pdq_df = pd.read_csv('data/pdq.csv', sep=";")
+    interventions_df = pd.read_csv('data/interventions.tsv', sep="\t")
+    nombre_interventions = interventions_df.groupby('PDQ')['PDQ'].size()
+    return nombre_interventions.to_dict()
 
 if __name__ == "__main__":
     app.run(host='localhost', port=5555, debug=False)
