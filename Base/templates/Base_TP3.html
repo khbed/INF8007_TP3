@@ -53,20 +53,7 @@
 			"20": "Centre-ville (Ville-Marie Ouest), parc du Mont-Royal"
 		};
 		//Généré dynamiquement en Python/Jinja et utilisé par scripts/forms.js
-		const catInterventions		= {
-			"Vols qualifiés" :
-				"Vol accompagné de violence de commerce, institution financière, personne, sac à main, véhicule blindé, véhicule, arme à feu, et tous autres types de vols qualifiés",
-			"Vol de véhicule à moteur":
-				"vol de voiture, camion, motocyclette, motoneige tracteur avec ou sans remorque, véhicule de construction ou de ferme, tout-terrain",
-			"Infractions entrainant la mort":
-				"Meurtre au premier degré, meurtre au deuxième degré, homicide involontaire, infanticide, négligence criminelle, et tous autres types d’infractions entraînant la mort",
-			"Méfait":
-				"Graffiti et dommage de biens religieux, de véhicule ou dommage général et tous autres types de méfaits",
-			"Vol dans / sur véhicule à moteur":
-				"vol du contenu d’un véhicule à moteur (voiture, camion, motocyclette, etc.) ou d’une pièce de véhicule (roue, parechoc, etc.)",
-			"Introduction":
-				"Introduction par effraction dans un établissement public ou une résidence privée, vol d’arme à feu dans une résidence"
-		};
+		const catInterventions ={{categorie_df | tojson }};
 		//Généré dynamiquement en Python/Jinja et utilisé par scripts/forms.js
 		const quarts = {
 			"3": "nuit",
@@ -76,11 +63,9 @@
 		console.log(catInterventions)
 		//Généré dynamiquement en Python/Jinja et utilisé par scripts/rapport.js
 
-		const var_interventions ={{categorie_df | tojson }};
 		const nbInterventionsParPDQ = {{ nombre_interventions | tojson }};
 
 		console.log(nbInterventionsParPDQ)
-		console.log(var_interventions)
 
 		const dateMin = {{ min_date | tojson}};
 		const dateMax = {{ max_date | tojson}};
@@ -454,7 +439,6 @@
 <!---------------------------------------------------------------- Code Seb modifications  ----------------------------------------------------------------------->
 							{%for index, row in pdq_df.iterrows(): %}
 							<option value={{row['PDQ']}}>{{row['PDQ']}}</option>
-								<!-- <option value="1">{{pdq_df['PDQ'].iloc[row['PDQ']]}}</option> -->
 							{% endfor %} 
 						</select>
 					</div>

@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, redirect
 from datetime import datetime
 import pandas as pd
+import csv
 
 app = Flask(__name__)
 
@@ -8,7 +9,7 @@ app = Flask(__name__)
 def index():
     pdq_df = pd.read_csv('data/pdq.csv', sep=";")
     interventions_df = pd.read_csv('data/interventions.tsv', sep="\t")
-    categorie_df = pd.read_csv('data/catégoriesInterventions.csv', sep=";")
+    categorie_df = pd.read_csv('data/catégoriesInterventions.csv', header=None, index_col=0, squeeze = True, sep=";")
     quart_df = pd.read_csv('data/quarts_travail.csv', sep=";")
 
     print(categorie_df['LIBELLÉ'])
@@ -32,10 +33,11 @@ def index():
     else :
         time_index = 3
 
-    print(interventions_df)
-    nombre_interventions = interventions_df.groupby('PDQ')['PDQ'].size()
+    print(categorie_df)
     categorie_df = categorie_df.to_dict()
-    print("test", nombre_interventions)
+    print(categorie_df) 
+
+    nombre_interventions = interventions_df.groupby('PDQ')['PDQ'].size()
     pdq_df['NB_INTERVENTIONS'] = pdq_df['PDQ'].map(nombre_interventions)
 
     interventions_df.sort_values(by=['DATE_INCIDENT'], inplace=True, ascending=False)
