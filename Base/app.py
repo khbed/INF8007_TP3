@@ -9,43 +9,12 @@ app = Flask(__name__)
 def index():
     pdq_df = pd.read_csv('data/pdq.csv', sep=";")
     interventions_df = pd.read_csv('data/interventions.tsv', sep="\t")
-    # quart_df = pd.read_csv('data/quarts_travail.csv', index_col=0, squeeze = True, sep=";")
-
-    # print(quart_df)
-    # time = datetime.now().time()
-    # now = datetime.now()
-    # time = now.strftime("%H:%M:%S")
-
-    # time_str = quart_df['HEURE_FIN'][1]
-    # time_fin_journee = datetime.strptime(time_str, '%H:%M:%S').time()
-    # time_str = quart_df['HEURE_DEBUT'][1]
-    # time_debut_journee = datetime.strptime(time_str, '%H:%M:%S').time()
-
-    # time_str = quart_df['HEURE_FIN'][3]
-    # time_fin_nuit = datetime.strptime(time_str, '%H:%M:%S').time()
-    # time_str = quart_df['HEURE_DEBUT'][3]
-    # time_debut_nuit = datetime.strptime(time_str, '%H:%M:%S').time()
-
-    # print(time)
-    # time = datetime.strptime(time, '%H:%M:%S').time()
-    # print("debut journee", time_debut_journee)
-    # print("fin journee", time_fin_journee)
-    # print("debut soir", time_debut_nuit)
-    # print("fin soir", time_fin_nuit)
-
-    # if time < time_fin_journee and time > time_debut_journee:
-    #     print("journee")
-    #     time_index = 1
-    # elif time < time_fin_nuit and time > time_debut_nuit:
-    #     print("nuit")
-    #     time_index = 3
-    # else  :
-    #     print("soir")
-    #     time_index = 2
-
+    
     nombre_interventions = get_nombre_interventions_PDQ()
     quart_dic = get_dictionnaire_quarts()
     categorie_df = get_categorie_interventions()
+    emplacement_pdq = get_emplacement_PDQ()
+    time_index = get_time_index()
 
     pdq_df['NB_INTERVENTIONS'] = pdq_df['PDQ'].map(nombre_interventions)
 
@@ -98,7 +67,7 @@ def index():
     return render_template('Base_TP3.html', pdq_df=pdq_df, nombre_interventions=nombre_interventions, min_date=min_date, max_date=max_date, 
     modify_no_intervention=modify_no_intervention, noModifyInvalid=noModifyInvalid, 
     toModify={'pdq' : lineToModify['PDQ'], 'date' : lineToModify['DATE_INCIDENT'], 'cat': lineToModify['CATÉGORIE'], 'quart' : lineToModify['QUART_TRAVAIL']},
-    categorie_df=categorie_df, quart_dic=quart_dic)
+    categorie_df=categorie_df, quart_dic=quart_dic, emplacement_pdq=emplacement_pdq, time_index=time_index)
 
 
 def get_dictionnaire_quarts():
@@ -114,6 +83,30 @@ def get_nombre_interventions_PDQ():
     interventions_df = pd.read_csv('data/interventions.tsv', sep="\t")
     nombre_interventions = interventions_df.groupby('PDQ')['PDQ'].size()
     return nombre_interventions.to_dict()
+
+def get_emplacement_PDQ():
+    pdq_emplacement_df = pd.read_csv('data/pdq.csv', index_col="PDQ", sep=";")
+    return pdq_emplacement_df.to_dict()
+
+def get_time_index():
+    time_index = 0
+    quart_df = pd.read_csv('data/quarts_travail.csv', index_col=0, squeeze = True, sep=";")
+    time = datetime.now().strftime("%H:%M:%S")
+    time = datetime.strptime(time, '%H:%M:%S').time()
+
+    jour_debut = datetime.strptime(quart_df['HEURE_DEBUT'][1], '%H:%M:%S').time()
+    jour_fin = datetime.strptime(quart_df['HEURE_FIN'][1], '%H:%M:%S').time()
+
+    nuit_debut = datetime.strptime(quart_df['HEURE_DEBUT'][3], '%H:%M:%S').time()
+    nuit_fin = datetime.strptime(quart_df['HEURE_FIN'][3], '%H:%M:%S').time()
+
+    if time > jour_debut and time < jour_fin:
+        time_index = 1
+    elif time > nuit_debut and time < nuit_fin:
+        time_index = 3
+    else: 
+        time_index = 2
+    return time_index
 
 if __name__ == "__main__":
     app.run(host='localhost', port=5555, debug=False)
