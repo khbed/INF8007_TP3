@@ -72,7 +72,8 @@ def index():
 
 def get_dictionnaire_quarts():
     quart_df = pd.read_csv('data/quarts_travail.csv', index_col='ID', sep=";")
-    return quart_df.to_dict()
+    quart_df = quart_df.to_dict()
+    return quart_df['LIBELLÉ']
 
 def get_categorie_interventions():
     categorie_df = pd.read_csv('data/catégoriesInterventions.csv', index_col="LIBELLÉ", squeeze = True, sep=";")
@@ -86,7 +87,8 @@ def get_nombre_interventions_PDQ():
 
 def get_emplacement_PDQ():
     pdq_emplacement_df = pd.read_csv('data/pdq.csv', index_col="PDQ", sep=";")
-    return pdq_emplacement_df.to_dict()
+    pdq_emplacement_df = pdq_emplacement_df.to_dict()
+    return pdq_emplacement_df['EMPLACEMENT']
 
 def get_time_index():
     time_index = 0

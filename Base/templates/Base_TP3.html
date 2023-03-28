@@ -15,11 +15,11 @@
 
 <body>
 	<script>
-		const emplacementsPDQ = {{emplacement_pdq['EMPLACEMENT'] | tojson}}
+		const emplacementsPDQ = {{emplacement_pdq | tojson}}
 
 		const catInterventions ={{categorie_df | tojson }};
 		
-		const quarts = {{quart_dic['LIBELLÉ'] | tojson}}
+		const quarts = {{quart_dic | tojson}}
 
 		const nbInterventionsParPDQ = {{ nombre_interventions | tojson }};
 
@@ -162,7 +162,7 @@
 							<div class="form-group col-md-6">
 								<label for="add_quart">Quart</label>
 								<select class="form-control form-select" id="add_quart" name="add_quart">
-									{% for index, row in quart_dic['LIBELLÉ'].items(): %}
+									{% for index, row in quart_dic.items(): %}
 										{% if index == time_index: %}
 										<option value="{{index}}" selected >{{row}}</option>
 										{% else: %} 
