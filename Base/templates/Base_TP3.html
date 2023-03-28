@@ -26,7 +26,7 @@
 		const dateMin = {{ min_date | tojson}};
 		const dateMax = {{ max_date | tojson}};
 
-		let validInterventionNbToRemove;
+		let validInterventionNbToRemove = ({{ noRemoveInvalid }}== 0);
 		let validInterventionNbToModify = ({{ noModifyInvalid }}== 0);
 		let interventionToModify = {
 			"4": "",
@@ -190,7 +190,11 @@
 							<div class="form-group col-md-11">
 								<input type="text" class="form-control" id="modify_no_intervention"
 									name="modify_no_intervention"
-									placeholder="Inscrire le # du rapport d'intervention à mettre à jour">
+									placeholder="Inscrire le # du rapport d'intervention à mettre à jour"
+									{% if (noModifyInvalid == 0) %}
+									value = "{{ modify_no_intervention }}"
+									{% endif %}
+									>
 							</div>
 							<div class="form-group col-md-1">
 								<button type="submit" id="modify-search-submit" class="form-control btn btn-info"><i
@@ -203,40 +207,13 @@
 							<div class="form-group col-md-3">
 								<label for="modify_pdq_nb"># Poste de quartier</label>
 								<select class="form-control form-select" id="modify_pdq_nb" name="modify_pdq_nb">
-									<option value="1">1</option>
-									<option value="3">3</option>
-									<option value="4">4</option>
-									<option value="5">5</option>
-									<option value="7">7</option>
-									<option value="8">8</option>
-									<option value="9">9</option>
-									<option value="10">10</option>
-									<option value="11">11</option>
-									<option value="12">12</option>
-									<option value="13">13</option>
-									<option value="15">15</option>
-									<option value="16">16</option>
-									<option value="20">20</option>
-									<option value="21">21</option>
-									<option value="22">22</option>
-									<option value="23">23</option>
-									<option value="24">24</option>
-									<option value="26">26</option>
-									<option value="27">27</option>
-									<option value="30">30</option>
-									<option value="31">31</option>
-									<option value="33">33</option>
-									<option value="35">35</option>
-									<option value="38">38</option>
-									<option value="39">39</option>
-									<option value="42">42</option>
-									<option value="44">44</option>
-									<option value="45">45</option>
-									<option value="46">46</option>
-									<option value="48">48</option>
-									<option value="49">49</option>
-									<option value="50">50</option>
-									<option value="55">55</option>
+									<option value='{{toModify.pdq}}' selected disabled>{{toModify.pdq}}</option>
+									{% for index, row in pdq_df.iterrows(): %}
+										{% if row['PDQ'] == toModify.pdq : %}
+										{% else :%}
+											<option value='{{row['PDQ']}}'>{{row['PDQ']}}</option>                               
+										{% endif %}
+                        			{% endfor %}
 								</select>
 							</div>
 							<div class="form-group col-md-9">
@@ -250,14 +227,14 @@
 								<label for="modify_cat_intervention">Catégorie</label>
 								<select class="form-control" id="modify_cat_intervention" name="modify_cat_intervention"
 									size="6">
-									<option value="Vols qualifiés">Vols qualifiés</option>
-									<option value="Vol de véhicule à moteur">Vol de véhicule à moteur</option>
-									<option value="Infractions entrainant la mort">Infractions entrainant la mort
-									</option>
-									<option value="Méfait">Méfait</option>
-									<option value="Vol dans / sur véhicule à moteur">Vol dans / sur véhicule à moteur
-									</option>
-									<option value="Introduction">Introduction</option>
+									<option value='{{toModify.cat}}' selected disabled>{{toModify.cat}}</option>
+									{% for row in categorie_df: %}
+										{% if row == toModify.cat : %}
+											
+										{% else :%}
+											<option value='{{row}}'>{{row}}</option>                               
+										{% endif %}
+                        			{% endfor %}
 								</select>
 							</div>
 							<div class="form-group col-md-6">
@@ -270,14 +247,18 @@
 							<div class="form-group col-md-6">
 								<label for="modify_date_incident">Date d'incident</label>
 								<input type="date" class="form-control" id="modify_date_incident"
-									name="modify_date_incident">
+									name="modify_date_incident" value = "{{ toModify.date }}">
 							</div>
 							<div class="form-group col-md-6">
 								<label for="modify_quart">Quart</label>
 								<select class="form-control" id="modify_quart" name="modify_quart">
-									<option value="3">nuit</option>
-									<option value="2">soir</option>
-									<option value="1">jour</option>
+									{% for index, row in quart_df.iterrows(): %}
+										{% if row['LIBELLÉ'] == toModify.quart : %}
+											<option value='{{row['ID']}}' selected disabled>{{row['LIBELLÉ']}}</option>
+										{% else :%}
+											<option value='{{row['ID']}}'>{{row['LIBELLÉ']}}</option>                               
+										{% endif %}
+                        			{% endfor %}
 								</select>
 							</div>
 						</div>
@@ -300,7 +281,10 @@
 							<div class="form-group col-md-11">
 								<input type="text" class="form-control" id="remove_no_intervention"
 									name="remove_no_intervention"
-									placeholder="Inscrire le # du rapport d'intervention à supprimer">
+									placeholder="Inscrire le # du rapport d'intervention à supprimer"
+									{% if (noRemoveInvalid == 0) %}
+									value = "{{ remove_no_intervention }}"
+									{% endif %}>
 							</div>
 							<div class="form-group col-md-1">
 								<button type="submit" id="remove-search-submit" class="form-control btn btn-info"><i
@@ -312,26 +296,26 @@
 						<div class="form-row">
 							<div class="form-group col-md-3">
 								<label for="remove_pdq_nb"># Poste de quartier</label>
-								<input type="text" class="form-control" id="remove_pdq_nb" value="" disabled>
-								<input type="hidden" name="no_intervention_to_remove" value="0">
+								<input type="text" class="form-control" id="remove_pdq_nb" value="{{toRemove.pdq}}" disabled>
+								<input type="hidden" name="no_intervention_to_remove" value="{{remove_no_intervention}}">
 							</div>
 							<div class="form-group col-md-9">
 								<label for="remove_pdq_place">Emplacement</label>
-								<input type="text" class="form-control" id="remove_pdq_place" value="" disabled>
+								<input type="text" class="form-control" id="remove_pdq_place" value="{{pdq_df[pdq_df['PDQ']==toRemove.pdq]['EMPLACEMENT'].iloc[0]}}"] disabled>
 							</div>
 						</div>
 						<div class="form-row">
 							<div class="form-group col-md-6">
 								<label for="cat_intervention">Catégorie</label>
-								<input type="text" class="form-control" id="remove_cat_intervention" value="" disabled>
+								<input type="text" class="form-control" id="remove_cat_intervention" value="{{toRemove.cat}}" disabled>
 							</div>
 							<div class="form-group col-md-4">
 								<label for="remove_date_incident">Date d'incident</label>
-								<input type="date" class="form-control" id="remove_date_incident" value="" disabled>
+								<input type="date" class="form-control" id="remove_date_incident" value="{{toRemove.date}}" disabled>
 							</div>
 							<div class="form-group col-md-2">
 								<label for="remove_quart">Quart</label>
-								<input type="text" class="form-control" id="remove_quart" value="" disabled>
+								<input type="text" class="form-control" id="remove_quart" value="{{toRemove.quart}}" disabled>
 							</div>
 						</div>
 						<div class="form-row">
@@ -377,46 +361,6 @@
 	</script>
 	{% endif %}
 
-	{% if (noModifyInvalid == 0) %}
-	<script>
-		modifyNoSearch = document.getElementById("modify_no_intervention");
-		modifyPDQList = document.getElementById("modify_pdq_nb");
-		modifyCatList = document.getElementById("modify_cat_intervention");
-		modifyDateList = document.getElementById("modify_date_incident");
-		modifyQuartList = document.getElementById("modify_quart");
-
-		modifyNoSearch.value = {{ modify_no_intervention }};
-
-		const selectMod = (liste, valeur) => {
-			iMod = 0;
-			optionMod = liste.options[0];
-			while ((optionMod.value != valeur) && (iMod < liste.length)) {
-				iMod += 1;
-				optionMod = liste.options[iMod];
-			}
-			let listeFirst = liste.firstElementChild;
-			optionMod.disabled = true;
-			liste.insertBefore(optionMod, listeFirst);
-		}
-		const selectModText = (liste, texte) => {
-			iMod = 0;
-			optionMod = liste.options[0];
-			while ((optionMod.textContent != texte) && (iMod < liste.length)) {
-				iMod += 1;
-				optionMod = liste.options[iMod];
-			}
-			let listeFirst = liste.firstElementChild;
-			optionMod.selected = true;
-			optionMod.disabled = true;
-		}
-
-		selectMod(modifyPDQList, {{ toModify.pdq }});
-		selectMod(modifyCatList, "{{ toModify.cat }}");
-		modifyDateList.value = "{{ toModify.date }}";
-		selectModText(modifyQuartList, "{{ toModify.quart }}");
-	</script>
-	{% endif %}
-
 	{% if (modifEffectuee) %}
 	<script>
 		console.log("test")
@@ -424,6 +368,41 @@
 		window.addEventListener("load", () => {
 			document.getElementById("popup-title").textContent = "Modification";
 			document.getElementById("popup-message").textContent = "L'intervention #{{modify_no_intervention}} a été modifiée avec succès.";
+			//JQuery pour l'affichage de la fenêtre modale Bootstrap
+			$("#popup").modal();
+			//Lorsque la fenêtre modale est fermée, recharger la page web en s’assurant d’enlever tous les paramètres dans
+			//la requête
+			$("#popup").on('hidden.bs.modal', (e) => {
+				window.location.search = "";
+			})
+		});
+	</script>
+	{% endif %}
+
+	{% if (noRemoveInvalid == 1) %}
+	<script>
+		//Une déclaration a été ajoutée, afficher le popup de confirmation
+		window.addEventListener("load", () => {
+			document.getElementById("popup-title").textContent = "Erreur";
+			document.getElementById("popup-message").textContent = "L'intervention #{{remove_no_intervention}} à supprimer n’existe pas.";
+			//JQuery pour l'affichage de la fenêtre modale Bootstrap
+			$("#popup").modal();
+			//Lorsque la fenêtre modale est fermée, recharger la page web en s’assurant d’enlever tous les
+			//paramètres dans la requête.
+			$("#popup").on('hidden.bs.modal', (e) => {
+				window.location.search = "";
+			})
+		});
+	</script>
+	{% endif %}
+
+	{% if (supprEffectuee) %}
+	<script>
+		console.log("test")
+		//Une déclaration a été ajoutée, afficher le popup de confirmation
+		window.addEventListener("load", () => {
+			document.getElementById("popup-title").textContent = "Modification";
+			document.getElementById("popup-message").textContent = "L'intervention #{{request.args.get('no_intervention_to_remove')}} a été retirée avec succès.";
 			//JQuery pour l'affichage de la fenêtre modale Bootstrap
 			$("#popup").modal();
 			//Lorsque la fenêtre modale est fermée, recharger la page web en s’assurant d’enlever tous les paramètres dans
