@@ -64,6 +64,13 @@ def index():
         print(remove_no_intervention)
     print(affichageModify)
 
+    numero_pdq = request.args.get('add_pdq_nb')
+    if numero_pdq != None:
+        categorie = request.args.get('add_cat_intervention')
+        date = request.args.get('add_date_incident')
+        quart = request.args.get('add_quart')
+        ajouter_intervention(numero_pdq, categorie, date, quart)
+
     return render_template('Base_TP3.html', pdq_df=pdq_df, nombre_interventions=nombre_interventions, min_date=min_date, max_date=max_date, 
     modify_no_intervention=modify_no_intervention, noModifyInvalid=noModifyInvalid, 
     toModify={'pdq' : lineToModify['PDQ'], 'date' : lineToModify['DATE_INCIDENT'], 'cat': lineToModify['CATÉGORIE'], 'quart' : lineToModify['QUART_TRAVAIL']},
@@ -109,6 +116,19 @@ def get_time_index():
     else: 
         time_index = 2
     return time_index
+
+def ajouter_intervention(numero_pdq, categorie, date, quart):
+    quarts = get_dictionnaire_quarts()
+    dernier_numero = trouver_dernier_numero_intervention()
+    nouvelle_intervention = f"\n{int(dernier_numero) + 1}\t{date}\t{categorie}\t{numero_pdq}\t{quarts[int(quart)]}"
+    file = open('data/interventions.tsv', 'a', encoding='UTF-8')
+    file.write(nouvelle_intervention)
+    file.close()
+
+def trouver_dernier_numero_intervention():
+    interventions_df = pd.read_csv('data/interventions.tsv', sep="\t")
+    print(interventions_df.iloc[-1]['ID_INTERVENTION'])
+    return interventions_df.iloc[-1]['ID_INTERVENTION']
 
 if __name__ == "__main__":
     app.run(host='localhost', port=5555, debug=False)
