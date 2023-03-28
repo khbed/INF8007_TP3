@@ -24,13 +24,17 @@ def index():
     max_date = interventions_df.iloc[0]['DATE_INCIDENT']
     min_date = interventions_df.iloc[-1]['DATE_INCIDENT']
 
+    ajout_effectue = False
+
+    num_nouvelle_intervention = -1
+
     numero_pdq = request.args.get('add_pdq_nb')
     if numero_pdq != None:
         categorie = request.args.get('add_cat_intervention')
         date = request.args.get('add_date_incident')
         quart = request.args.get('add_quart')
-        ajouter_intervention(numero_pdq, categorie, date, quart)
-    
+        num_nouvelle_intervention = ajouter_intervention(numero_pdq, categorie, date, quart)
+        ajout_effectue = True
 
     noModifyInvalid, modify_no_intervention, lineToModify = recherche_modif(interventions_df)
     modifEffectuee = apply_modif(modify_no_intervention)
@@ -42,7 +46,7 @@ def index():
     modify_no_intervention=modify_no_intervention, noModifyInvalid=noModifyInvalid, 
     toModify={'pdq' : lineToModify['PDQ'], 'date' : lineToModify['DATE_INCIDENT'], 'cat': lineToModify['CATÉGORIE'], 'quart' : lineToModify['QUART_TRAVAIL']}, modifEffectuee = modifEffectuee,
     remove_no_intervention=remove_no_intervention, noRemoveInvalid=noRemoveInvalid, toRemove={'pdq' : lineToRemove['PDQ'], 'date' : lineToRemove['DATE_INCIDENT'], 'cat': lineToRemove['CATÉGORIE'], 'quart' : lineToRemove['QUART_TRAVAIL']}, supprEffectuee=supprEffectuee,
-    categorie_df=categorie_df, quart_dic=quart_dic, emplacement_pdq=emplacement_pdq, time_index=time_index, quart_df=quart_df)
+    categorie_df=categorie_df, quart_dic=quart_dic, emplacement_pdq=emplacement_pdq, time_index=time_index, quart_df=quart_df, ajout_effectue=ajout_effectue, num_nouvelle_intervention=num_nouvelle_intervention)
 
 
 def get_dictionnaire_quarts():
@@ -92,6 +96,8 @@ def ajouter_intervention(numero_pdq, categorie, date, quart):
     file = open('data/interventions.tsv', 'a', encoding='UTF-8')
     file.write(nouvelle_intervention)
     file.close()
+    return dernier_numero + 1
+    
 
 def trouver_dernier_numero_intervention():
     interventions_df = pd.read_csv('data/interventions.tsv', sep="\t")
@@ -99,7 +105,6 @@ def trouver_dernier_numero_intervention():
     return interventions_df.iloc[-1]['ID_INTERVENTION']
 
 def recherche_modif(interventions_df):
-
     # On va chercher la valeur de modify_no_intervention
     interventions_df.sort_values(by=['ID_INTERVENTION'], inplace=True, ascending=True)
     modify_no_intervention = request.args.get('modify_no_intervention')
